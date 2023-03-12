@@ -7,13 +7,10 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
 
 WORKDIR /app
 
+COPY ./requirements.txt /app/
+COPY ./app /app
+
+RUN pip install --no-cache-dir --upgrade -r requirements.txt
+
 ENV PYTHONPATH "${PYTHONPATH}:/"
 ENV PORT=8000
-
-RUN pip install --upgrade pip
-
-COPY ./requirements.txt /app/
-
-RUN pip install -r requirements.txt
-
-COPY ./app /app
