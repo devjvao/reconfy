@@ -41,6 +41,8 @@ class Settings(BaseSettings):
     INITIAL_USER_EMAIL: EmailStr
     INITIAL_USER_PASSWORD: str
 
+    MODEL_WEIGHTS_PATH: str
+
     class Config:
         case_sensitive = True
         env_file = ".env"

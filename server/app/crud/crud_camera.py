@@ -3,7 +3,7 @@ from typing import Optional
 from sqlalchemy.orm import Session
 
 from app.crud.base import CRUDBase
-from app.models.camera import Camera
+from app.db.models.camera import Camera
 from app.schemas.camera import CameraCreate, CameraUpdate
 
 

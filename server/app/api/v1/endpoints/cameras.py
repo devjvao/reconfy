@@ -3,8 +3,9 @@ from typing import Any, List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from app import crud, schemas, models
+from app import crud, schemas
 from app.api import deps
+from app.db import models
 
 router = APIRouter()
 

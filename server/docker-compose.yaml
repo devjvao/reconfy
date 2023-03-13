@@ -30,6 +30,7 @@ services:
       INITIAL_USER_NAME: User
       INITIAL_USER_EMAIL: fyrecon@test.com
       INITIAL_USER_PASSWORD: fyrecon
+      MODEL_WEIGHTS_PATH: ../model/v4/best.pt
     ports:
       - "8000:8000"
     depends_on:
