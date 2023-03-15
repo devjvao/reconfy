@@ -1,8 +1,12 @@
-import React, { type FunctionComponent } from 'react';
+import React, {type FunctionComponent} from 'react';
+import {useTranslation} from 'react-i18next';
 import logo from './logo.svg';
 import './App.css';
+import './i18n/config';
 
 export const App: FunctionComponent = () => {
+    const {t} = useTranslation('home');
+
     return (
         <div className="App">
             <header className="App-header">
@@ -12,7 +16,7 @@ export const App: FunctionComponent = () => {
                     alt="logo"
                 />
                 <p>
-                  Edit <code>src/App.tsx</code> and save to reload.
+                    {t('title')}
                 </p>
                 <a
                     className="App-link"
@@ -26,5 +30,3 @@ export const App: FunctionComponent = () => {
         </div>
     );
 };
-
-export default App;
