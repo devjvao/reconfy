@@ -1,8 +1,8 @@
-import React, {type FunctionComponent} from 'react';
+import {type FunctionComponent} from 'react';
 import {useTranslation} from 'react-i18next';
 import logo from './logo.svg';
 import './App.css';
-import './i18n/config';
+import './locales/config';
 
 export const App: FunctionComponent = () => {
     const {t} = useTranslation('home');

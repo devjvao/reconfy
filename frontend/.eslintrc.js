@@ -34,6 +34,7 @@ module.exports = {
         semi: ['error', 'always'],
         'comma-dangle': ['error', 'only-multiline'],
         'object-curly-spacing': ['error', 'never'],
+        'react/react-in-jsx-scope': 'off',
         '@typescript-eslint/indent': ['error', 4],
         '@typescript-eslint/quotes': ['error', 'single'],
         '@typescript-eslint/semi': ['error', 'always'],
