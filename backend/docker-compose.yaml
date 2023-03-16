@@ -21,15 +21,15 @@ services:
     build: .
     entrypoint: dockerize -wait tcp://database:5432 -timeout 20s /start.sh
     environment:
-      PROJECT_NAME: fyrecon
+      PROJECT_NAME: reconfy
       BACKEND_CORS_ORIGINS: '["http://localhost:8000", "https://localhost:8000", "http://localhost", "https://localhost"]'
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_SERVER: database
       POSTGRES_DB: app
       INITIAL_USER_NAME: User
-      INITIAL_USER_EMAIL: fyrecon@test.com
-      INITIAL_USER_PASSWORD: fyrecon
+      INITIAL_USER_EMAIL: reconfy@test.com
+      INITIAL_USER_PASSWORD: reconfy
       MODEL_WEIGHTS_PATH: ../model/v4/best.pt
     ports:
       - "8000:8000"
