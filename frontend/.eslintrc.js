@@ -38,10 +38,13 @@ module.exports = {
         '@typescript-eslint/indent': ['error', 4],
         '@typescript-eslint/quotes': ['error', 'single'],
         '@typescript-eslint/semi': ['error', 'always'],
-        '@typescript-eslint/comma-dangle': ['error', 'only-multiline'],
+        '@typescript-eslint/comma-dangle': ['error', 'always-multiline'],
         '@typescript-eslint/object-curly-spacing': ['error', 'never'],
         '@typescript-eslint/no-floating-promises': 'off',
+        '@typescript-eslint/no-confusing-void-expression': 'off',
+        '@typescript-eslint/no-misused-promises': 'off',
         'react/react-in-jsx-scope': 'off',
+        'react/display-name': 'off',
     },
     overrides: [
         {

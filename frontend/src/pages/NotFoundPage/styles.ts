@@ -22,14 +22,5 @@ export const style: BoxStyle = {
     '& > p': {
         textAlign: 'center',
         lineHeight: 2,
-
-        '& > a': {
-            color: '#40A5FF',
-            textDecoration: 'none',
-
-            '&:hover': {
-                color: '#408cff',
-            },
-        },
     },
 };

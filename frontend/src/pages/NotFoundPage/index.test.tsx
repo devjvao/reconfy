@@ -1,20 +1,20 @@
 import {screen} from '@testing-library/react';
-import {NotFound} from './index';
+import {NotFoundPage} from './index';
 import {type PartialTranslation, render} from '../../utils/testing/render';
 
 const translation: PartialTranslation = {
     page: {
-        notFound: {
+        notFoundPage: {
             title: 'title',
             description: 'description <1>homepage</1>',
         },
     },
 };
 
-describe('<NotFound />', () => {
+describe('<NotFoundPage />', () => {
     it('should render the page', () => {
         render({
-            component: <NotFound />,
+            component: <NotFoundPage />,
             translation: translation,
         });
 

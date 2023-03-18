@@ -1,6 +1,6 @@
+import {type ComponentProps, type ElementType, type ForwardedRef, type ReactElement} from 'react';
 import css, {type SystemStyleObject} from '@styled-system/css';
 import styled from '@emotion/styled';
-import {type ComponentProps, type ElementType, type ForwardedRef, type ReactElement} from 'react';
 
 export type BoxStyle = SystemStyleObject;
 
@@ -12,7 +12,7 @@ export interface BoxProps {
 export type GenericProps<
     T extends ElementType,
     P extends Record<string, any>,
-    FP extends Record<string, any>
+    FP extends Record<string, any>,
 > =
     P & Omit<ComponentProps<T>, 'as' | keyof P | keyof FP> & {
         as?: ComponentProps<T> extends ComponentProps<T> & Partial<FP> ? T : never

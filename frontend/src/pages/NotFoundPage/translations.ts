@@ -1,4 +1,4 @@
-export interface NotFoundTranslations {
+export interface NotFoundPageTranslations {
     title: string
     description: string
 }

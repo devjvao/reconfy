@@ -1,11 +1,11 @@
 import {type FunctionComponent} from 'react';
-import {Link} from 'react-router-dom';
 import {Trans, useTranslation} from 'react-i18next';
 import {Box} from '../../ui/Box';
+import {Link} from '../../ui/Link';
 import {style} from './styles';
 
-export const NotFound: FunctionComponent = () => {
-    const {t} = useTranslation('page', {keyPrefix: 'notFound'});
+export const NotFoundPage: FunctionComponent = () => {
+    const {t} = useTranslation('page', {keyPrefix: 'notFoundPage'});
 
     return (
         <Box style={style}>

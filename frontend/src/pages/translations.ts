@@ -1,5 +1,7 @@
-import {type NotFoundTranslations} from './NotFound/translations';
+import {type NotFoundPageTranslations} from './NotFoundPage/translations';
+import {type SignInPageTranslations} from './SignInPage/translations';
 
 export interface PageTranslations {
-    notFound: NotFoundTranslations
+    notFoundPage: NotFoundPageTranslations
+    signInPage: SignInPageTranslations
 }
