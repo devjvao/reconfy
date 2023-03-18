@@ -1,5 +1,10 @@
-import {homePage} from './pages/home';
+import {type Dictionary, type Translation} from '../index';
+import {notFound} from './pages/notFound';
 
-export default {
-    home: homePage
+const reconfy: Dictionary<Translation> = {
+    page: {
+        notFound: notFound,
+    },
 };
+
+export default reconfy;

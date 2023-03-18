@@ -1,32 +1,19 @@
 import {type FunctionComponent} from 'react';
-import {useTranslation} from 'react-i18next';
-import logo from './logo.svg';
-import './App.css';
+import {BrowserRouter, Route, Routes} from 'react-router-dom';
+import {Layout} from './components/Layout';
+import {Login} from './pages/Login';
+import {NotFound} from './pages/NotFound';
 import './locales/config';
 
 export const App: FunctionComponent = () => {
-    const {t} = useTranslation('home');
-
     return (
-        <div className="App">
-            <header className="App-header">
-                <img
-                    src={logo}
-                    className="App-logo"
-                    alt="logo"
-                />
-                <p>
-                    {t('title')}
-                </p>
-                <a
-                    className="App-link"
-                    href="https://reactjs.org"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                  Learn React
-                </a>
-            </header>
-        </div>
+        <BrowserRouter>
+            <Layout>
+                <Routes>
+                    <Route path="/login" element={<Login />} />
+                    <Route path="*" element={<NotFound />} />
+                </Routes>
+            </Layout>
+        </BrowserRouter>
     );
 };

@@ -32,15 +32,16 @@ module.exports = {
         indent: ['error', 4],
         quotes: ['error', 'single'],
         semi: ['error', 'always'],
-        'comma-dangle': ['error', 'only-multiline'],
+        'object-shorthand': ['error', 'never'],
+        'comma-dangle': ['error', 'always-multiline'],
         'object-curly-spacing': ['error', 'never'],
-        'react/react-in-jsx-scope': 'off',
         '@typescript-eslint/indent': ['error', 4],
         '@typescript-eslint/quotes': ['error', 'single'],
         '@typescript-eslint/semi': ['error', 'always'],
         '@typescript-eslint/comma-dangle': ['error', 'only-multiline'],
         '@typescript-eslint/object-curly-spacing': ['error', 'never'],
         '@typescript-eslint/no-floating-promises': 'off',
+        'react/react-in-jsx-scope': 'off',
     },
     overrides: [
         {
@@ -48,7 +49,7 @@ module.exports = {
                 '@typescript-eslint/triple-slash-reference': 'off',
             },
             files: [
-                'src/react-app-env.d.ts',
+                'src/extensions.d.ts',
             ],
         },
     ],
