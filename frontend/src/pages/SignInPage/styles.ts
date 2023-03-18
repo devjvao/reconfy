@@ -28,5 +28,12 @@ export const style: BoxStyle = {
                 fontSize: '16px',
             },
         },
+
+        '& > .invalid-credentials': {
+            backgroundColor: '#ff4c65',
+            color: 'white',
+            padding: '16px',
+            borderRadius: '6px',
+        },
     },
 };

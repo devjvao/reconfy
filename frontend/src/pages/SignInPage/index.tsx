@@ -1,4 +1,4 @@
-import {type FunctionComponent} from 'react';
+import {type FunctionComponent, useState} from 'react';
 import {Box} from '../../ui/Box';
 import {style} from './styles';
 import {useForm} from 'react-hook-form';
@@ -31,9 +31,36 @@ interface FormData {
 export const SignInPage: FunctionComponent = () => {
     const {t} = useTranslation('page', {keyPrefix: 'signInPage'});
     const schema = useSchema(t);
+    const [invalidCredentials, setInvalidCredentials] = useState(false);
     const {register, handleSubmit, formState: {errors}} = useForm<FormData>({
         resolver: yupResolver(schema),
     });
+
+    const onSignIn = async (formData: FormData): Promise<void> => {
+        const body = Object.entries(formData)
+            .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+            .join('&');
+
+        const response = await fetch('http://localhost:8000/api/v1/login/access-token', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+            },
+            body: body,
+        });
+
+        if (response.status === 400) {
+            setInvalidCredentials(true);
+
+            return;
+        }
+
+        setInvalidCredentials(false);
+
+        const responseBody = await response.json();
+
+        console.log(responseBody);
+    };
 
     return (
         <Box style={style}>
@@ -46,7 +73,12 @@ export const SignInPage: FunctionComponent = () => {
                         </Trans>
                     </p>
                 </header>
-                <Form onSubmit={handleSubmit(data => { console.log(data); })}>
+                {invalidCredentials && (
+                    <div className="invalid-credentials">
+                        {t('error.invalidCredentials')}
+                    </div>
+                )}
+                <Form onSubmit={handleSubmit(onSignIn)}>
                     <TextField
                         {...register(('username'))}
                         id="username"
