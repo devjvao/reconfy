@@ -6,7 +6,22 @@ import {Form} from '../../ui/Form';
 import {TextField} from '../../ui/TextField';
 import {Link} from '../../ui/Link';
 import {Button} from '../../ui/Button';
-import {Trans, useTranslation} from 'react-i18next';
+import {Trans, useTranslation, type UseTranslationResponse} from 'react-i18next';
+import {yupResolver} from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+
+const useSchema = (t: UseTranslationResponse<'page', 'signInPage'>['t']): yup.Schema => {
+    return yup
+        .object()
+        .shape({
+            username: yup.string()
+                .email(t('fields.username.error.invalid'))
+                .required(t('fields.username.error.empty')),
+            password: yup.string()
+                .required(t('fields.password.error.empty')),
+        })
+        .required();
+};
 
 interface FormData {
     username: string
@@ -14,8 +29,11 @@ interface FormData {
 }
 
 export const SignInPage: FunctionComponent = () => {
-    const {register, handleSubmit} = useForm<FormData>();
     const {t} = useTranslation('page', {keyPrefix: 'signInPage'});
+    const schema = useSchema(t);
+    const {register, handleSubmit, formState: {errors}} = useForm<FormData>({
+        resolver: yupResolver(schema),
+    });
 
     return (
         <Box style={style}>
@@ -32,13 +50,16 @@ export const SignInPage: FunctionComponent = () => {
                     <TextField
                         {...register(('username'))}
                         id="username"
+                        type="email"
                         label={t('fields.username.label')}
+                        error={errors.username?.message}
                     />
                     <TextField
                         {...register(('password'))}
                         id="password"
                         type="password"
                         label={t('fields.password.label')}
+                        error={errors.password?.message}
                     />
                     <Button type="submit">
                         {(t('action'))}

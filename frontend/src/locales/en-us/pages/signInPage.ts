@@ -8,9 +8,16 @@ export const signInPage: Dictionary<SignInPageTranslations> = {
     fields: {
         username: {
             label: 'Email',
+            error: {
+                empty: 'Please enter the email',
+                invalid: 'Please enter a valid email',
+            },
         },
         password: {
             label: 'Password',
+            error: {
+                empty: 'Please enter the password',
+            },
         },
     },
 };
