@@ -8,7 +8,9 @@ type LayoutProps = PropsWithChildren;
 export const Layout: FunctionComponent<LayoutProps> = ({children}) => {
     return (
         <Box style={style}>
-            <Navbar />
+            <header>
+                <Navbar />
+            </header>
             <main>
                 {children}
             </main>

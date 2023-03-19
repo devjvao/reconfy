@@ -6,7 +6,6 @@ from sqlalchemy.orm import Session
 
 from app import crud
 from app.api import deps
-from app.db import models
 from app.util import stream
 
 router = APIRouter()
@@ -18,7 +17,9 @@ async def stream_camera(
     *,
     db: Session = Depends(deps.get_db),
     camera_id: int,
-    current_user: models.User = Depends(deps.get_current_user),
+    # @todo Protect endpoint if there is a way to pass the
+    #   token using <video /> html tag
+    # current_user: models.User = Depends(deps.get_current_user),
 ) -> Any:
     camera = crud.camera.get(db, id=camera_id)
     if not camera:

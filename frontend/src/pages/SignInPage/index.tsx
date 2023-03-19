@@ -1,4 +1,4 @@
-import {type FunctionComponent, useState} from 'react';
+import {type FunctionComponent, useEffect, useState} from 'react';
 import {Box} from '../../ui/Box';
 import {style} from './styles';
 import {useForm} from 'react-hook-form';
@@ -9,6 +9,9 @@ import {Button} from '../../ui/Button';
 import {Trans, useTranslation, type UseTranslationResponse} from 'react-i18next';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import {BACKEND_URL} from '../../utils/constants';
+import {useAuth, type User} from '../../components/AuthProvider';
+import {useNavigate} from 'react-router-dom';
 
 const useSchema = (t: UseTranslationResponse<'page', 'signInPage'>['t']): yup.Schema => {
     return yup
@@ -23,6 +26,12 @@ const useSchema = (t: UseTranslationResponse<'page', 'signInPage'>['t']): yup.Sc
         .required();
 };
 
+interface SignInResponse {
+    access_token: string
+    token_type: string
+    user: User
+}
+
 interface FormData {
     username: string
     password: string
@@ -32,6 +41,9 @@ export const SignInPage: FunctionComponent = () => {
     const {t} = useTranslation('page', {keyPrefix: 'signInPage'});
     const schema = useSchema(t);
     const [invalidCredentials, setInvalidCredentials] = useState(false);
+    const {authenticated, updateUser} = useAuth();
+    const navigate = useNavigate();
+
     const {register, handleSubmit, formState: {errors}} = useForm<FormData>({
         resolver: yupResolver(schema),
     });
@@ -41,7 +53,7 @@ export const SignInPage: FunctionComponent = () => {
             .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
             .join('&');
 
-        const response = await fetch('http://localhost:8000/api/v1/login/access-token', {
+        const response = await fetch(`${BACKEND_URL}/api/v1/login/access-token`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
@@ -57,10 +69,21 @@ export const SignInPage: FunctionComponent = () => {
 
         setInvalidCredentials(false);
 
-        const responseBody = await response.json();
+        const responseBody: SignInResponse = await response.json();
 
-        console.log(responseBody);
+        updateUser(responseBody.access_token, responseBody.user);
+
+        navigate('/');
     };
+
+    useEffect(
+        () => {
+            if (authenticated) {
+                navigate('/');
+            }
+        },
+        [authenticated, navigate],
+    );
 
     return (
         <Box style={style}>

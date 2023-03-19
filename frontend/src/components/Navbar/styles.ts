@@ -9,6 +9,7 @@ export const style: BoxStyle = {
         maxWidth: '1280px',
         display: 'flex',
         alignItems: 'center',
+        justifyContent: 'space-between',
 
         '& > .home': {
             height: '36px',
@@ -16,6 +17,17 @@ export const style: BoxStyle = {
             '& > .logo': {
                 height: '100%',
                 width: 'auto',
+            },
+        },
+
+        '& > .menu-item': {
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            color: '#1c1b1b',
+
+            '&:hover': {
+                color: '#424242',
             },
         },
     },
