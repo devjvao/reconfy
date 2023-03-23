@@ -7,9 +7,7 @@ import {style} from './styles';
 import {useAuth} from '../AuthProvider';
 
 export const Navbar: FunctionComponent = () => {
-    const {authenticated, user, logout} = useAuth();
-
-    console.log(user);
+    const {authenticated, logout} = useAuth();
 
     return (
         <Box style={style}>

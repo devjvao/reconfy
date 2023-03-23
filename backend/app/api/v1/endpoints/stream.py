@@ -30,4 +30,4 @@ async def stream_camera(
 
     data = stream.load_source(camera.url)
 
-    return StreamingResponse(data, media_type="multipart/x-mixed-replace;boundary=frame")
+    return StreamingResponse(data, media_type="multipart/x-mixed-replace; boundary=frame")
