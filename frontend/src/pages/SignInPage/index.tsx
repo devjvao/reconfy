@@ -1,4 +1,4 @@
-import {type FunctionComponent, useEffect, useState} from 'react';
+import {type FunctionComponent, useEffect} from 'react';
 import {Box} from '../../ui/Box';
 import {style} from './styles';
 import {useForm} from 'react-hook-form';
@@ -12,6 +12,7 @@ import * as yup from 'yup';
 import {BACKEND_URL} from '../../utils/constants';
 import {useAuth, type User} from '../../components/AuthProvider';
 import {useNavigate} from 'react-router-dom';
+import {toast} from 'react-toastify';
 
 const useSchema = (t: UseTranslationResponse<'page', 'signInPage'>['t']): yup.Schema => {
     return yup
@@ -40,7 +41,6 @@ interface FormData {
 export const SignInPage: FunctionComponent = () => {
     const {t} = useTranslation('page', {keyPrefix: 'signInPage'});
     const schema = useSchema(t);
-    const [invalidCredentials, setInvalidCredentials] = useState(false);
     const {authenticated, updateUser} = useAuth();
     const navigate = useNavigate();
 
@@ -62,12 +62,10 @@ export const SignInPage: FunctionComponent = () => {
         });
 
         if (response.status === 400) {
-            setInvalidCredentials(true);
+            toast(t('error.invalidCredentials'), {type: 'warning'});
 
             return;
         }
-
-        setInvalidCredentials(false);
 
         const responseBody: SignInResponse = await response.json();
 
@@ -96,11 +94,6 @@ export const SignInPage: FunctionComponent = () => {
                         </Trans>
                     </p>
                 </header>
-                {invalidCredentials && (
-                    <div className="invalid-credentials">
-                        {t('error.invalidCredentials')}
-                    </div>
-                )}
                 <Form onSubmit={handleSubmit(onSignIn)}>
                     <TextField
                         {...register(('username'))}

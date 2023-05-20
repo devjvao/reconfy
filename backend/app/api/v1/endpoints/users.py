@@ -5,13 +5,13 @@ from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
 from app import crud, schemas
-from app.db import models
 from app.api import deps
+from app.db import models
 
 router = APIRouter()
 
 
-@router.post("/", response_model=schemas.User)
+@router.post("", response_model=schemas.User)
 def create_user(
     *,
     db: Session = Depends(deps.get_db),
@@ -23,7 +23,7 @@ def create_user(
     user = crud.user.get_by_email(db, email=user_in.email)
     if user:
         raise HTTPException(
-            status_code=400,
+            status_code=409,
             detail="The user with this email already exists in the system.",
         )
     return crud.user.create(db, obj_in=user_in)

@@ -39,6 +39,8 @@ export const useAuth = (): State => {
 
 const RECONFY_AUTH_TOKEN = 'reconfy.token';
 
+const UNAUTHENTICATED_ROUTES = ['/signin', '/signup'];
+
 export const AuthProvider: FunctionComponent<PropsWithChildren> = ({children}) => {
     const [authenticated, setAuthenticated] = useState<boolean>(false);
     const [user, setUser] = useState<User>();
@@ -95,7 +97,7 @@ export const AuthProvider: FunctionComponent<PropsWithChildren> = ({children}) =
             const storedToken = localStorage.getItem(RECONFY_AUTH_TOKEN);
 
             if (storedToken === null) {
-                if (pathname !== '/signin') {
+                if (!UNAUTHENTICATED_ROUTES.includes(pathname)) {
                     navigate('/signin');
                 }
 

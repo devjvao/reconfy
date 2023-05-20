@@ -11,7 +11,7 @@ router = APIRouter()
 
 
 # noinspection PyUnusedLocal
-@router.get("/", response_model=List[schemas.Camera])
+@router.get("", response_model=List[schemas.Camera])
 def read_cameras(
     db: Session = Depends(deps.get_db),
     skip: int = 0,
@@ -25,7 +25,7 @@ def read_cameras(
 
 
 # noinspection PyUnusedLocal
-@router.post("/", response_model=schemas.Camera)
+@router.post("", response_model=schemas.Camera)
 def create_camera(
     *,
     db: Session = Depends(deps.get_db),

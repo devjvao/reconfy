@@ -12,14 +12,14 @@ export const signInPage: Dictionary<SignInPageTranslations> = {
         username: {
             label: 'Email',
             error: {
-                empty: 'Please enter the email',
-                invalid: 'Please enter a valid email',
+                empty: 'Please enter the email.',
+                invalid: 'Please enter a valid email.',
             },
         },
         password: {
             label: 'Password',
             error: {
-                empty: 'Please enter the password',
+                empty: 'Please enter the password.',
             },
         },
     },

@@ -11,9 +11,16 @@ const translation: PartialTranslation = {
             fields: {
                 username: {
                     label: 'username:label',
+                    error: {
+                        empty: 'username:error:empty',
+                        invalid: 'username:error:invalid',
+                    },
                 },
                 password: {
                     label: 'password:label',
+                    error: {
+                        empty: 'password:error:empty',
+                    },
                 },
             },
         },
