@@ -6,13 +6,15 @@ export const style: BoxStyle = {
     '& > .cameras': {
         margin: 'auto',
         display: 'grid',
-        gridTemplateColumns: 'repeat(4, 1fr)',
         gap: '16px',
+        gridTemplateColumns: 'repeat(3, 1fr)',
 
-        '& > .camera': {
-            width: '100%',
-            height: '300px',
-            backgroundColor: 'gray',
+        '@media (max-width: 1024px)': {
+            gridTemplateColumns: 'repeat(2, 1fr)',
+        },
+
+        '@media (max-width: 480px)': {
+            gridTemplateColumns: '1fr',
         },
     },
 };
