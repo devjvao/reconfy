@@ -8,6 +8,10 @@ export const style: BoxStyle = {
         padding: '16px',
         margin: 'auto',
         maxWidth: '1280px',
-        height: 'calc(100% - 70px)',
+        minHeight: 'calc(100% - 70px)',
+
+        '&::backdrop': {
+            background: 'unset',
+        },
     },
 };

@@ -1,16 +1,25 @@
 import {type ButtonHTMLAttributes, forwardRef, type PropsWithChildren} from 'react';
+import classNames from 'classnames';
 import {Box} from '../Box';
 import {style} from './styles';
 
 type InheritedButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'style'>;
 
-type ButtonProps = InheritedButtonProps;
+type ButtonProps = InheritedButtonProps & {
+    variant?: 'filled' | 'neutral'
+};
 
 export const Button = forwardRef<HTMLButtonElement, PropsWithChildren<ButtonProps>>((props, ref) => {
-    const {children, ...rest} = props;
+    const {children, className, variant = 'filled', ...rest} = props;
 
     return (
-        <Box as="button" {...rest} ref={ref} style={style}>
+        <Box
+            {...rest}
+            as="button"
+            ref={ref}
+            style={style}
+            className={classNames(className, variant)}
+        >
             {children}
         </Box>
     );

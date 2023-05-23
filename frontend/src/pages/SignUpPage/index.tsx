@@ -54,15 +54,6 @@ export const SignUpPage: FunctionComponent = () => {
             body: JSON.stringify(formData),
         });
 
-        if (response.status === 409) {
-            setError('email', {
-                type: 'conflict',
-                message: t('fields.email.error.conflict'),
-            });
-
-            return;
-        }
-
         if (response.status !== 200) {
             if (response.status === 409) {
                 setError('email', {

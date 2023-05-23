@@ -4,7 +4,6 @@ export const style: BoxStyle = {
     height: '100%',
 
     '& > .cameras': {
-        margin: 'auto',
         display: 'grid',
         gap: '16px',
         gridTemplateColumns: 'repeat(3, 1fr)',

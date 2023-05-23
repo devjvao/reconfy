@@ -38,7 +38,7 @@ def create_camera(
     camera = crud.camera.get_by_url(db, url=camera_in.url)
     if camera:
         raise HTTPException(
-            status_code=400,
+            status_code=409,
             detail="The camera with this url already exists in the system.",
         )
     return crud.camera.create(db, obj_in=camera_in)

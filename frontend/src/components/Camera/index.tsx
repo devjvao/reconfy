@@ -2,7 +2,7 @@ import {type FunctionComponent, useEffect, useState} from 'react';
 import {BACKEND_URL} from '../../utils/constants';
 import {Box} from '../../ui/Box';
 import {style} from './styles';
-import {ReactComponent as Loading} from '../../assets/loading.svg';
+import {ReactComponent as LoadingIcon} from '../../assets/loading.svg';
 
 interface CameraProps {
     id: number
@@ -25,7 +25,7 @@ export const Camera: FunctionComponent<CameraProps> = ({id}) => {
     return (
         <Box style={style}>
             {loading
-                ? <Loading />
+                ? <LoadingIcon />
                 : <img src={src} alt="Video Stream" />}
         </Box>
     );
