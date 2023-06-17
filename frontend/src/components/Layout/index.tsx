@@ -4,6 +4,7 @@ import {style} from './styles';
 import {Navbar} from '../Navbar';
 import {Menu} from '../Menu';
 import {useAuth} from '../AuthProvider';
+import {CamerasProvider} from '../CamerasProvider';
 
 type LayoutProps = PropsWithChildren;
 
@@ -17,7 +18,15 @@ export const Layout: FunctionComponent<LayoutProps> = ({children}) => {
                 <Navbar />
             </header>
             <main ref={fullscreenRef}>
-                {authenticated && <Menu fullscreenRef={fullscreenRef} />}
+                {authenticated
+                    ? (
+                        <CamerasProvider>
+                            <Menu fullscreenRef={fullscreenRef} />
+                            {children}
+                        </CamerasProvider>
+                    )
+                    : children
+                }
                 {children}
             </main>
         </Box>

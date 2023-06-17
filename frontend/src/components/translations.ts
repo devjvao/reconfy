@@ -1,7 +1,7 @@
 import {type MenuTranslations} from './Menu/translations';
-import {type NewCameraDialogTranslations} from './NewCameraDialog/translations';
+import {type CameraDialogTranslations} from './CameraDialog/translations';
 
 export interface ComponentTranslations {
     menu: MenuTranslations
-    newCameraDialog: NewCameraDialogTranslations
+    cameraDialog: CameraDialogTranslations
 }

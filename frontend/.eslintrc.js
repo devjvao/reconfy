@@ -29,7 +29,7 @@ module.exports = {
         },
     },
     rules: {
-        indent: ['error', 4],
+        indent: ['error', 4, {SwitchCase: 1}],
         quotes: ['error', 'single'],
         semi: ['error', 'always'],
         'object-shorthand': ['error', 'never'],
@@ -44,6 +44,7 @@ module.exports = {
         '@typescript-eslint/no-confusing-void-expression': 'off',
         '@typescript-eslint/no-misused-promises': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',
+        '@typescript-eslint/space-before-function-paren': 'off',
         'react/react-in-jsx-scope': 'off',
         'react/display-name': 'off',
     },

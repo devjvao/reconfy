@@ -3,12 +3,12 @@ import {notFoundPage} from './pages/notFoundPage';
 import {signInPage} from './pages/signInPage';
 import {signUpPage} from './pages/signUpPage';
 import {menu} from './components/menu';
-import {newCameraDialog} from './components/newCameraDialog';
+import {cameraDialog} from './components/cameraDialog';
 
 const reconfy: Dictionary<Translation> = {
     component: {
         menu: menu,
-        newCameraDialog: newCameraDialog,
+        cameraDialog: cameraDialog,
     },
     page: {
         notFoundPage: notFoundPage,

@@ -17,6 +17,7 @@ export const style: BoxStyle = {
     width: '100%',
     height: '400px',
     backgroundColor: 'gray',
+    position: 'relative',
 
     '& > svg': {
         width: '32px',
@@ -25,10 +26,48 @@ export const style: BoxStyle = {
     },
 
     '& > img': {
-        width: 'auto',
-        height: 'auto',
         maxWidth: '100%',
         maxHeight: '100%',
         backgroundColor: 'gray',
+    },
+
+    '& > .name': {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        backgroundColor: 'black',
+        color: 'white',
+        fontSize: '24px',
+        padding: '2px',
+    },
+
+    '&.alert > .name': {
+        backgroundColor: 'red',
+    },
+
+    '& > .options': {
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        padding: '4px',
+        backgroundColor: 'rgba(0, 0, 0, .4)',
+        borderEndStartRadius: '8px',
+        opacity: 0,
+        transition: 'opacity 0.1s ease-in-out',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '2px',
+
+        '& > svg': {
+            color: 'white',
+            width: '30px',
+            height: '30px',
+            zIndex: 1,
+            cursor: 'pointer',
+        },
+    },
+
+    '&:hover > .options': {
+        opacity: 1,
     },
 };

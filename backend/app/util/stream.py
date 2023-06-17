@@ -1,87 +1,108 @@
 import asyncio
+import json
+import uuid
 
 import cv2
 import torch
-from yolov5.models.common import DetectMultiBackend
+from starlette.websockets import WebSocket, WebSocketState
 from yolov5.utils.dataloaders import LoadStreams
-from yolov5.utils.general import check_img_size, Profile, non_max_suppression, scale_boxes
+from yolov5.utils.general import Profile, non_max_suppression, scale_boxes
 from yolov5.utils.plots import Annotator, colors
-from yolov5.utils.torch_utils import select_device
 
-from app.core.config import settings
+from app.util.model import GlobalModelInstance
+from app.util.singleton import SingletonMeta
 
 
-async def load_source(source: str):
-    conf_thres = 0.2
-    iou_thres = 0.2
+class StreamController(metaclass=SingletonMeta):
+    def __init__(self):
+        self.streams = {}
 
-    # Load model
-    device = select_device()
-    model = DetectMultiBackend(settings.MODEL_WEIGHTS_PATH, device=device)
-    stride, names, pt = model.stride, model.names, model.pt
-    imgsz = check_img_size((640, 640), s=stride)  # check image size
+    def add(self, camera_id: int, websocket: WebSocket):
+        key = str(uuid.uuid4())
 
-    dataset = LoadStreams(source, img_size=imgsz, stride=stride, auto=pt)
-    bs = len(dataset)
+        self.streams[key] = {
+            "camera_id": camera_id,
+            "websocket": websocket,
+        }
 
-    model.warmup(imgsz=(1 if pt or model.triton else bs, 3, *imgsz))  # warmup
-    seen, windows, dt = 0, [], (Profile(), Profile(), Profile())
+        return key
+
+    async def remove(self, key):
+        config = self.streams[key]
+        websocket = config['websocket']
+
+        if websocket.client_state is not WebSocketState.DISCONNECTED:
+            await websocket.close()
+
+        del self.streams[key]
+
+
+async def load_source(url: str, key: str):
+    controller = StreamController()
+    config = controller.streams[key]
+    websocket = config['websocket']
+
+    conf_threshold = 0.2
+    iou_threshold = 0.2
+
+    instance = GlobalModelInstance()
+    model = instance.model
+
+    dataset = LoadStreams(url, img_size=instance.imgsz, stride=model.stride, auto=model.pt)
+
+    dt = (Profile(), Profile(), Profile())
 
     try:
-        for path, im, im0s, vid_cap, s in dataset:
+        for path, input_image, original_images, video_capture, image_size in dataset:
             with dt[0]:
-                im = torch.from_numpy(im).to(model.device)
-                im = im.half() if model.fp16 else im.float()  # uint8 to fp16/32
-                im /= 255  # 0 - 255 to 0.0 - 1.0
-                if len(im.shape) == 3:
-                    im = im[None]  # expand for batch dim
+                input_image = torch.from_numpy(input_image).to(model.device)
+                input_image = input_image.half() if model.fp16 else input_image.float()  # uint8 to fp16/32
+                input_image /= 255  # 0 - 255 to 0.0 - 1.0
+
+                if len(input_image.shape) == 3:
+                    input_image = input_image[None]  # expand for batch dim
 
             # Inference
             with dt[1]:
-                pred = model(im)
+                prediction = model(input_image)
 
-            # NMS
+            # Filter out redundant or overlapping bounding boxes using NMS
             with dt[2]:
-                pred = non_max_suppression(prediction=pred, conf_thres=conf_thres, iou_thres=iou_thres, max_det=1000)
+                prediction = non_max_suppression(prediction=prediction, conf_thres=conf_threshold,
+                                                 iou_thres=iou_threshold, max_det=1000)
 
-            # Second-stage classifier (optional)
-            # pred = utils.general.apply_classifier(pred, classifier_model, im, im0s)
+            for i, detection in enumerate(prediction):
+                result_image = original_images[i].copy()
+                has_fire = len(detection) > 0
+                annotator = Annotator(result_image, line_width=3, example=str(model.names))
 
-            for i, det in enumerate(pred):  # per image
-                seen += 1
-                p, im0, frame = path[i], im0s[i].copy(), dataset.count
-                s += f'{i}: '
+                if has_fire:
+                    # Rescale boxes to the original image size
+                    detection[:, :4] = scale_boxes(input_image.shape[2:], detection[:, :4], result_image.shape).round()
 
-                s += '%gx%g ' % im.shape[2:]  # print string
-                gn = torch.tensor(im0.shape)[[1, 0, 1, 0]]  # normalization gain whwh
-                annotator = Annotator(im0, line_width=3, example=str(names))
-
-                if len(det):
-                    # Rescale boxes from img_size to im0 size
-                    det[:, :4] = scale_boxes(im.shape[2:], det[:, :4], im0.shape).round()
-
-                    # Print results
-                    for c in det[:, 5].unique():
-                        n = (det[:, 5] == c).sum()  # detections per class
-                        s += f"{n} {names[int(c)]}{'s' * (n > 1)}, "  # add to string
-
-                    for *xyxy, conf, cls in reversed(det):
-                        c = int(cls)  # integer class
-                        label = f'{names[c]} {conf:.2f}'
+                    for *xyxy, conf, cls in reversed(detection):
+                        c = int(cls)
+                        label = f'{model.names[c]} {conf:.2f}'
                         annotator.box_label(xyxy, label, color=colors(c, True))
 
-                # Stream results
-                im0 = annotator.result()
-
-                (flag, encodedImage) = cv2.imencode(".jpg", im0)
+                result_image = annotator.result()
+                (flag, encoded_image) = cv2.imencode(".jpg", result_image)
 
                 if not flag:
                     continue
 
                 # yield im0 if isinstance(im0, Image.Image) else Image.fromarray(im0)
-                yield b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + bytearray(encodedImage) + b'\r\n'
+                yield b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + bytearray(encoded_image) + b'\r\n'
+
+                json_payload = json.dumps({
+                    "hasFire": has_fire,
+                })
+
+                if websocket.client_state is WebSocketState.CONNECTED:
+                    await websocket.send_text(json_payload)
 
                 await asyncio.sleep(0)
-
     except asyncio.CancelledError:
-        print('Disconnected from ' + source)
+        await controller.remove(key)
+
+        print('Disconnected')

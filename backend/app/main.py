@@ -3,6 +3,13 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1.api import api_router
 from app.core.config import settings
+from app.util.model import GlobalModelInstance
+from app.util.stream import StreamController
+
+# Instantiate the model to warm up before requests
+GlobalModelInstance()
+
+StreamController()
 
 app = FastAPI(
     title=settings.PROJECT_NAME,

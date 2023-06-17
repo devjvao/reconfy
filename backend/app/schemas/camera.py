@@ -7,8 +7,6 @@ from pydantic import BaseModel
 class CameraBase(BaseModel):
     url: Optional[str] = None
     name: Optional[str] = None
-    description: Optional[str] = None
-    is_active: Optional[bool] = True
 
 
 class CameraCreate(CameraBase):

@@ -6,7 +6,8 @@ import {useFullscreen} from './useFullscreen';
 import {ReactComponent as AddIcon} from '../../assets/add.svg';
 import {ReactComponent as FullscreenIcon} from '../../assets/fullscreen.svg';
 import {style} from './styles';
-import {NewCameraDialog} from '../NewCameraDialog';
+import {CameraDialog} from '../CameraDialog';
+import {useCamerasContext} from '../CamerasProvider';
 
 interface MenuProps {
     fullscreenRef: RefObject<HTMLElement>
@@ -14,12 +15,14 @@ interface MenuProps {
 
 export const Menu: FunctionComponent<MenuProps> = ({fullscreenRef}) => {
     const {active, exit, enter} = useFullscreen(fullscreenRef);
+    const {addCamera} = useCamerasContext();
 
     const {t} = useTranslation('component', {keyPrefix: 'menu'});
 
     return (
         <Box style={style}>
-            <NewCameraDialog
+            <CameraDialog
+                onSuccess={camera => addCamera(camera)}
                 disclosure={(
                     <Button
                         variant="neutral"

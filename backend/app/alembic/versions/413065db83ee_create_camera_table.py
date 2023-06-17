@@ -5,9 +5,8 @@ Revises: 8ba7f9d10338
 Create Date: 2023-03-12 19:18:53.687392
 
 """
-from alembic import op
 import sqlalchemy as sa
-
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision = '413065db83ee'
@@ -22,8 +21,6 @@ def upgrade() -> None:
         sa.Column('id', sa.Integer, primary_key=True),
         sa.Column('url', sa.String(255), nullable=False),
         sa.Column('name', sa.String(50), nullable=False),
-        sa.Column('description', sa.String(100), nullable=True),
-        sa.Column('is_active', sa.Boolean(), nullable=False, default=True),
     )
     op.create_index(op.f("ix_camera_url"), "camera", ["url"], unique=True)
 

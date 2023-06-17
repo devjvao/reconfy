@@ -62,4 +62,13 @@ def update_camera(
             status_code=400,
             detail="The camera with this id does not exist in the system.",
         )
+
+    if camera.url != camera_in.url:
+        camera_by_url = crud.camera.get_by_url(db, url=camera_in.url)
+        if camera_by_url:
+            raise HTTPException(
+                status_code=409,
+                detail="The camera with this url already exists in the system.",
+            )
+
     return crud.camera.update(db, db_obj=camera, obj_in=camera_in)

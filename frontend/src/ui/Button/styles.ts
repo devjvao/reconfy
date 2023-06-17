@@ -21,4 +21,9 @@ export const style: BoxStyle = {
         backgroundColor: 'inherit',
         border: 'inherit',
     },
+
+    '&:disabled': {
+        backgroundColor: 'rgba(51, 130, 204, 0.5)',
+        border: 'none',
+    },
 };

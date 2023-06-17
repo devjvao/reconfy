@@ -1,33 +1,65 @@
+import json
 from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, WebSocket, HTTPException
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
+from starlette.websockets import WebSocketDisconnect, WebSocketState
 
 from app import crud
 from app.api import deps
-from app.util import stream
+from app.util.stream import StreamController, load_source
 
 router = APIRouter()
 
 
-# noinspection PyUnusedLocal
-@router.get("/connect/{camera_id}")
-async def stream_camera(
+@router.websocket("/connect/{camera_id}")
+async def connect(websocket: WebSocket, camera_id: int) -> None:
+    try:
+        await websocket.accept()
+
+        controller = StreamController()
+
+        key = controller.add(camera_id, websocket)
+
+        json_payload = json.dumps({
+            "key": key,
+        })
+
+        await websocket.send_text(json_payload)
+
+        await websocket.receive_text()
+    except WebSocketDisconnect:
+        pass
+    finally:
+        if websocket.client_state != WebSocketState.DISCONNECTED:
+            await websocket.close()
+
+
+@router.get("/detect/{key}")
+async def detect(
     *,
     db: Session = Depends(deps.get_db),
-    camera_id: int,
-    # @todo Protect endpoint if there is a way to pass the
-    #   token using <video /> html tag
-    # current_user: models.User = Depends(deps.get_current_user),
+    key: str,
 ) -> Any:
-    camera = crud.camera.get(db, id=camera_id)
+    controller = StreamController()
+
+    config = controller.streams[key]
+    if not config:
+        raise HTTPException(
+            status_code=400,
+            detail="The key is not valid or the related connection was closed.",
+        )
+
+    camera = crud.camera.get(db, id=config['camera_id'])
     if not camera:
+        await controller.remove(key)
+
         raise HTTPException(
             status_code=400,
             detail="The camera with this id does not exist in the system.",
         )
 
-    data = stream.load_source(camera.url)
+    data = load_source(camera.url, key)
 
     return StreamingResponse(data, media_type="multipart/x-mixed-replace; boundary=frame")
