@@ -9,6 +9,7 @@ export const cameraDialog: Dictionary<CameraDialogTranslations> = {
     action: {
         new: 'Create',
         edit: 'Update',
+        cancel: 'Cancel',
     },
     notification: {
         success: {

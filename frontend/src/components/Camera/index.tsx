@@ -1,4 +1,4 @@
-import {type FunctionComponent, useEffect, useState} from 'react';
+import {Fragment, type FunctionComponent, useEffect, useState} from 'react';
 import {BACKEND_URL, BACKEND_WS_URL} from '../../utils/constants';
 import {Box} from '../../ui/Box';
 import {style} from './styles';
@@ -8,6 +8,7 @@ import {ReactComponent as EditIcon} from '../../assets/edit.svg';
 import {ReactComponent as RemoveIcon} from '../../assets/remove.svg';
 import {CameraDialog} from '../CameraDialog';
 import {useCamerasContext} from '../CamerasProvider';
+import {DeleteCameraModal} from '../DeleteCameraModal';
 
 interface CameraProps {
     id: number
@@ -19,10 +20,16 @@ interface CameraProps {
 export const Camera: FunctionComponent<CameraProps> = props => {
     const {index, id, name, url} = props;
 
-    const {updateCamera} = useCamerasContext();
+    const {updateCamera, removeCamera} = useCamerasContext();
     const [src, setSrc] = useState('');
     const [loading, setLoading] = useState(true);
     const [hasFire, setFire] = useState(false);
+
+    const formModalState = useState(false);
+    const [formModalOpen, setFormModalOpen] = formModalState;
+
+    const deleteModalState = useState(false);
+    const [deleteModalOpen, setDeleteModalOpen] = deleteModalState;
 
     useEffect(
         () => {
@@ -59,21 +66,34 @@ export const Camera: FunctionComponent<CameraProps> = props => {
     );
 
     return (
-        <Box style={style} className={classNames({alert: hasFire})}>
-            <div className="options">
+        <Fragment>
+            <Box style={style} className={classNames({alert: hasFire})}>
+                <div className="options">
+                    <EditIcon onClick={() => setFormModalOpen(true)} />
+                    <RemoveIcon onClick={() => setDeleteModalOpen(true)} />
+                </div>
+                <span className="name">{name}</span>
+                {loading ? <LoadingIcon /> : <img src={src} alt="Video Stream" onLoad={() => console.log('load')} />}
+            </Box>
+            {formModalOpen && (
                 <CameraDialog
                     id={id}
-                    disclosure={<EditIcon />}
+                    state={formModalState}
                     defaultValues={{
                         name: name,
                         url: url,
                     }}
                     onSuccess={camera => updateCamera(index, camera)}
                 />
-                <RemoveIcon/>
-            </div>
-            <span className="name">{name}</span>
-            {loading ? <LoadingIcon /> : <img src={src} alt="Video Stream" />}
-        </Box>
+            )}
+            {deleteModalOpen && (
+                <DeleteCameraModal
+                    id={id}
+                    name={name}
+                    state={deleteModalState}
+                    onDelete={() => removeCamera(index)}
+                />
+            )}
+        </Fragment>
     );
 };

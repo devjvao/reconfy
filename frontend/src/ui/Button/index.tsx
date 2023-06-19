@@ -6,11 +6,11 @@ import {style} from './styles';
 type InheritedButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'style'>;
 
 type ButtonProps = InheritedButtonProps & {
-    variant?: 'filled' | 'neutral'
+    variant?: 'primary' | 'secondary' | 'neutral'
 };
 
 export const Button = forwardRef<HTMLButtonElement, PropsWithChildren<ButtonProps>>((props, ref) => {
-    const {children, className, variant = 'filled', ...rest} = props;
+    const {children, className, variant = 'primary', ...rest} = props;
 
     return (
         <Box

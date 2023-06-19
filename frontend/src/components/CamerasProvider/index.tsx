@@ -21,12 +21,14 @@ interface CamerasState {
     cameras: Camera[]
     addCamera: (camera: Camera) => void
     updateCamera: (index: number, camera: Camera) => void
+    removeCamera: (index: number) => void
 }
 
 const CamerasContext = createContext<CamerasState>({
     cameras: [],
     addCamera: () => {},
     updateCamera: () => {},
+    removeCamera: () => {},
 });
 
 export function useCamerasContext(): CamerasState {
@@ -74,11 +76,25 @@ export const CamerasProvider: FunctionComponent<PropsWithChildren> = ({children}
         [],
     );
 
+    const removeCamera = useCallback(
+        (index: number) => {
+            setCameras(prevState => {
+                const clone = [...prevState];
+
+                clone.splice(index, 1);
+
+                return clone;
+            });
+        },
+        [],
+    );
+
     const value = useMemo<CamerasState>(
         () => ({
             cameras: cameras,
             addCamera: addCamera,
             updateCamera: updateCamera,
+            removeCamera: removeCamera,
         }),
         [cameras, updateCamera],
     );

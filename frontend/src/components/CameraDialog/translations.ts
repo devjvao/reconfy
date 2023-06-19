@@ -6,6 +6,7 @@ export interface CameraDialogTranslations {
     action: {
         new: string
         edit: string
+        cancel: string
     }
     notification: {
         success: {

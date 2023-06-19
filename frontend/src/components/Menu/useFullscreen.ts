@@ -8,7 +8,7 @@ interface FullscreenState {
     exit: () => void
 }
 
-export function useFullscreen (fullscreenRef: RefObject<HTMLElement>): FullscreenState {
+export function useFullscreen(fullscreenRef: RefObject<HTMLElement>): FullscreenState {
     const [active, setActive] = useState(false);
 
     useEffect(

@@ -67,7 +67,7 @@ export const style: BoxStyle = {
         },
     },
 
-    '&:hover > .options': {
+    '&:hover > .options, & > .options:has([data-open="true"])': {
         opacity: 1,
     },
 };

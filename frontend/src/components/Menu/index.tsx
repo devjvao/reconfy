@@ -1,4 +1,4 @@
-import {type FunctionComponent, type RefObject} from 'react';
+import {Fragment, type FunctionComponent, type RefObject, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Box} from '../../ui/Box';
 import {Button} from '../../ui/Button';
@@ -16,31 +16,35 @@ interface MenuProps {
 export const Menu: FunctionComponent<MenuProps> = ({fullscreenRef}) => {
     const {active, exit, enter} = useFullscreen(fullscreenRef);
     const {addCamera} = useCamerasContext();
+    const formModalState = useState(false);
+    const [, setFormModalOpen] = formModalState;
 
     const {t} = useTranslation('component', {keyPrefix: 'menu'});
 
     return (
-        <Box style={style}>
+        <Fragment>
+            <Box style={style}>
+                <Button
+                    variant="neutral"
+                    className="control"
+                    onClick={() => setFormModalOpen(true)}
+                >
+                    <AddIcon />
+                    {t('option.addCamera')}
+                </Button>
+                <Button
+                    variant="neutral"
+                    className="control"
+                    onClick={active ? exit : enter}
+                >
+                    <FullscreenIcon />
+                    {t('option.fullscreen')}
+                </Button>
+            </Box>
             <CameraDialog
+                state={formModalState}
                 onSuccess={camera => addCamera(camera)}
-                disclosure={(
-                    <Button
-                        variant="neutral"
-                        className="control"
-                    >
-                        <AddIcon />
-                        {t('option.addCamera')}
-                    </Button>
-                )}
             />
-            <Button
-                variant="neutral"
-                className="control"
-                onClick={active ? exit : enter}
-            >
-                <FullscreenIcon />
-                {t('option.fullscreen')}
-            </Button>
-        </Box>
+        </Fragment>
     );
 };

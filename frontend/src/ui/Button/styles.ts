@@ -16,14 +16,18 @@ export const style: BoxStyle = {
         boxShadow: 'rgb(255, 255, 255) 0px 0px 0px 1px, #40A5FF 0px 0px 0px 3px',
     },
 
-    '&:not(.filled)': {
+    '&.secondary': {
+        backgroundColor: '#ABABAB',
+        border: '1px solid #ABABAB',
+    },
+
+    '&.neutral': {
         color: 'black',
         backgroundColor: 'inherit',
         border: 'inherit',
     },
 
     '&:disabled': {
-        backgroundColor: 'rgba(51, 130, 204, 0.5)',
-        border: 'none',
+        opacity: '0.5',
     },
 };

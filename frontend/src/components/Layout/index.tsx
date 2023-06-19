@@ -1,4 +1,5 @@
-import {type FunctionComponent, type PropsWithChildren, useRef} from 'react';
+import React, {type FunctionComponent, type PropsWithChildren, useRef} from 'react';
+import {ToastContainer} from 'react-toastify';
 import {Box} from '../../ui/Box';
 import {style} from './styles';
 import {Navbar} from '../Navbar';
@@ -17,7 +18,7 @@ export const Layout: FunctionComponent<LayoutProps> = ({children}) => {
             <header>
                 <Navbar />
             </header>
-            <main ref={fullscreenRef}>
+            <main id="content" ref={fullscreenRef}>
                 {authenticated
                     ? (
                         <CamerasProvider>
@@ -27,7 +28,7 @@ export const Layout: FunctionComponent<LayoutProps> = ({children}) => {
                     )
                     : children
                 }
-                {children}
+                <ToastContainer />
             </main>
         </Box>
     );

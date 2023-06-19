@@ -3,13 +3,15 @@ import {useTranslation, type UseTranslationResponse} from 'react-i18next';
 import * as yup from 'yup';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
-import {Modal, type ModalProps} from '../../ui/Modal';
+import {type ControlledModalProps, Modal} from '../../ui/Modal';
 import {TextField} from '../../ui/TextField';
 import {Button} from '../../ui/Button';
 import {Form} from '../../ui/Form';
 import {BACKEND_URL} from '../../utils/constants';
 import {toast} from 'react-toastify';
 import {useAuth} from '../AuthProvider';
+import {Box} from '../../ui/Box';
+import {actionsStyle} from './styles';
 
 const useSchema = (t: UseTranslationResponse<'component', 'cameraDialog'>['t']): yup.Schema => {
     return yup
@@ -32,7 +34,7 @@ interface Camera {
 }
 
 interface CameraDialogProps {
-    disclosure: ModalProps['disclosure']
+    state: ControlledModalProps['state']
     id?: number
     defaultValues?: FormData
     onSuccess?: (camera: Camera) => void
@@ -41,18 +43,17 @@ interface CameraDialogProps {
 type FormData = Omit<Camera, 'id'>;
 
 export const CameraDialog: FunctionComponent<CameraDialogProps> = props => {
-    const {disclosure, id, defaultValues, onSuccess} = props;
+    const {state, id, defaultValues, onSuccess} = props;
     const isEditing = id !== undefined;
     const translationKey = isEditing ? 'edit' : 'new';
 
     const {t} = useTranslation('component', {keyPrefix: 'cameraDialog'});
     const schema = useSchema(t);
-    const state = useState(false);
     const [, setOpen] = state;
     const {token = ''} = useAuth();
     const [loading, setLoading] = useState(false);
 
-    const {register, handleSubmit, setError, formState: {errors, isDirty}} = useForm<FormData>({
+    const {register, handleSubmit, setError, reset, formState: {errors, isDirty}} = useForm<FormData>({
         resolver: yupResolver(schema),
         defaultValues: defaultValues,
     });
@@ -92,20 +93,21 @@ export const CameraDialog: FunctionComponent<CameraDialogProps> = props => {
 
         const data = await response.json();
 
-        setTimeout(() => onSuccess?.(data), 0);
-
         setLoading(false);
 
         setOpen(false);
+
+        onSuccess?.(data);
+
+        reset();
     };
 
     return (
         <Modal
             state={state}
             title={t(`title.${translationKey}`)}
-            disclosure={disclosure}
         >
-            <Form onSubmit={handleSubmit(onSubmit)}>
+            <Form id="camera-form" onSubmit={handleSubmit(onSubmit)}>
                 <TextField
                     {...register(('name'))}
                     autoFocus
@@ -123,10 +125,15 @@ export const CameraDialog: FunctionComponent<CameraDialogProps> = props => {
                     error={errors.url?.message}
                     autoComplete="off"
                 />
-                <Button type="submit" disabled={loading || !isDirty}>
+            </Form>
+            <Box style={actionsStyle}>
+                <Button onClick={() => setOpen(false)} variant="secondary">
+                    {(t('action.cancel'))}
+                </Button>
+                <Button type="submit" form="camera-form" disabled={loading || !isDirty}>
                     {(t(`action.${translationKey}`))}
                 </Button>
-            </Form>
+            </Box>
         </Modal>
     );
 };

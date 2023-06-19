@@ -72,3 +72,24 @@ def update_camera(
             )
 
     return crud.camera.update(db, db_obj=camera, obj_in=camera_in)
+
+
+# noinspection PyUnusedLocal
+@router.delete("/{camera_id}", response_model=schemas.Camera)
+def delete_camera(
+    *,
+    db: Session = Depends(deps.get_db),
+    camera_id: int,
+    current_user: models.User = Depends(deps.get_current_user),
+) -> Any:
+    """
+    Delete a camera.
+    """
+    camera = crud.camera.get(db, id=camera_id)
+    if not camera:
+        raise HTTPException(
+            status_code=400,
+            detail="The camera with this id does not exist in the system.",
+        )
+
+    return crud.camera.remove(db, id=camera_id)

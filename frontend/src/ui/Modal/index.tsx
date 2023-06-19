@@ -6,17 +6,17 @@ import {
     type ReactElement,
     type ReactNode,
     type SetStateAction,
-    useRef,
+    useMemo,
     useState,
 } from 'react';
-import BaseModal from 'react-modal';
+import ReactModal from 'react-modal';
 import {Box} from '../Box';
 import {style} from './styles';
 import {ReactComponent as CloseIcon} from '../../assets/close.svg';
 
 interface UncontrolledModalProps {
     title: string
-    disclosure: ReactElement
+    disclosure?: ReactElement
     children?: ReactNode
 }
 
@@ -26,7 +26,7 @@ const UncontrolledModal: FunctionComponent<UncontrolledModalProps> = props => {
     return <ControlledModal state={state} {...props} />;
 };
 
-interface ControlledModalProps extends UncontrolledModalProps {
+export interface ControlledModalProps extends UncontrolledModalProps {
     state: [boolean, Dispatch<SetStateAction<boolean>>]
 }
 
@@ -35,31 +35,29 @@ const ControlledModal: FunctionComponent<ControlledModalProps> = props => {
 
     const [open, setOpen] = state;
 
-    const ref = useRef<HTMLDivElement>(null);
+    const main = useMemo(() => document.getElementById('content') as HTMLElement, []);
 
     return (
         <Fragment>
-            {cloneElement(disclosure, {onClick: (): void => setOpen(true)})}
-            <Box ref={ref} style={style}>
-                <BaseModal
-                    isOpen={open}
-                    // @todo Add `aria-hidden` to the root app to improve accessibility
-                    ariaHideApp={false}
-                    // Allow the backdrop to be visible on fullscreen by rendering the modal
-                    // inside the main content
-                    {...(ref.current !== null ? {parentSelector: () => ref.current!} : {})}
-                >
-                    <div className="header">
-                        <h2>{title}</h2>
-                        <div className="close" onClick={(): void => setOpen(false)}>
-                            <CloseIcon />
-                        </div>
+            {disclosure !== undefined
+                ? cloneElement(disclosure, {onClick: (): void => setOpen(true), 'data-open': open})
+                : null
+            }
+            <ReactModal
+                isOpen={open}
+                appElement={main}
+                parentSelector={() => main}
+            >
+                <Box style={style}>
+                    <h2>{title}</h2>
+                    <div className="close" onClick={(): void => setOpen(false)}>
+                        <CloseIcon />
                     </div>
-                    <div className="content">
-                        {children}
-                    </div>
-                </BaseModal>
-            </Box>
+                </Box>
+                <div>
+                    {children}
+                </div>
+            </ReactModal>
         </Fragment>
     );
 };
