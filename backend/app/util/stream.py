@@ -42,8 +42,8 @@ async def load_source(url: str, key: str):
     config = controller.streams[key]
     websocket = config['websocket']
 
-    conf_threshold = 0.2
-    iou_threshold = 0.2
+    conf_threshold = 0.4
+    iou_threshold = 0.8
 
     instance = GlobalModelInstance()
     model = instance.model
@@ -70,6 +70,9 @@ async def load_source(url: str, key: str):
             with dt[2]:
                 prediction = non_max_suppression(prediction=prediction, conf_thres=conf_threshold,
                                                  iou_thres=iou_threshold, max_det=1000)
+
+            # deveria usar sigmoid?
+            # curva ROC
 
             for i, detection in enumerate(prediction):
                 result_image = original_images[i].copy()
